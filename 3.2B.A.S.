@@ -1,0 +1,118 @@
+package service.domain;
+
+import domain.BankAccount;
+import service.Connectivity;
+import service.Service;
+
+import java.sql.ResultSet;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class BankAccountService {
+
+    private List<BankAccount> list;
+
+    public BankAccountService(){
+        init();
+    }
+
+    void init(){
+        String request = "SELECT * FROM Account";
+
+        try {
+            ResultSet rs = Service.getStatement().executeQuery(request);
+            list = new ArrayList<>();
+
+            while (rs.next()){
+                list.add(new BankAccount(rs.getInt("Id"),
+                        rs.getString("Name"),
+                        rs.getString("Surname"),
+                        LocalDateTime.parse(rs.getString("DateOperation")),
+                        Double.parseDouble(rs.getString("SumOperation"))));
+            }
+
+
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public List<BankAccount> getAll(){
+        return list;
+    }
+
+    public void create(BankAccount bankAccount){
+        String query = "INSERT INTO Account" +
+                "(Name, " +
+                "Surname," +
+                "DateOperation," +
+                "SumOperation) " +
+                "Values ('" +
+                bankAccount.getName() + "', '" +
+                bankAccount.getSurname() + "', '" +
+                LocalDateTime.now() + "', '" +
+                bankAccount.getSum() + "');";
+
+        try{
+            Service.getStatement().execute(query);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }finally {
+            this.init();
+        }
+    }
+
+    public void update(BankAccount bankAccount){
+        String query = "UPDATE Account " +
+                "Set " +
+                "Name = '" + bankAccount.getName() + "', " +
+                "Surname = '" + bankAccount.getSurname() + "', " +
+                "DateOperation = '" + LocalDateTime.now() + "', " +
+                "SumOperation = '" + bankAccount.getSum() + "' " +
+                "Where Id = " + bankAccount.getId() + ";";
+        try{
+            Service.getStatement().execute(query);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }finally {
+            this.init();
+        }
+    }
+
+    public void delete(int id){
+        String query = "Delete from Account Where Id = " + id + ";";
+
+        try{
+            Service.getStatement().execute(query);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }finally {
+            this.init();
+        }
+    }
+
+    public BankAccount getOneById(int id){
+        return list.stream()
+                .filter(item -> item.getId() == id)
+                .collect(Collectors.toList())
+                .get(0);
+    }
+
+    public List<BankAccount> getSortedBySum(){
+        return list.stream()
+                .sorted(Comparator.comparing(BankAccount::getSum))
+                .collect(Collectors.toList());
+    }
+
+    public List<BankAccount> getAllByDate(String date){
+        return list.stream()
+                .filter(item -> item.getLastOperation()
+                        .toString()
+                        .indexOf(date) != -1)
+                .collect(Collectors.toList());
+    }
+}
