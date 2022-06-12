@@ -1,0 +1,103 @@
+package domain;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Objects;
+
+public class BankAccount {
+
+    private int id;
+    private String name;
+    private String surname;
+    private LocalDateTime lastOperation;
+    private double sum;
+
+    public BankAccount() {
+    }
+
+    public BankAccount(String name,
+                       String surname,
+                       LocalDateTime lastOperation,
+                       double sum) {
+        this.name = name;
+        this.surname = surname;
+        this.lastOperation = lastOperation;
+        this.sum = sum;
+    }
+
+    public BankAccount(int id,
+                       String name,
+                       String surname,
+                       LocalDateTime lastOperation,
+                       double sum) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.lastOperation = lastOperation;
+        this.sum = sum;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public LocalDateTime getLastOperation() {
+        return lastOperation;
+    }
+
+    public void setLastOperation(LocalDateTime lastOperation) {
+        this.lastOperation = lastOperation;
+    }
+
+    public double getSum() {
+        return sum;
+    }
+
+    public void setSum(double sum) {
+        this.sum = sum;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BankAccount)) return false;
+        BankAccount that = (BankAccount) o;
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "BankAccount{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", lastOperation=" + lastOperation +
+                ", sum=" + sum +
+                '}';
+    }
+}
