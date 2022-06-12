@@ -1,0 +1,66 @@
+import java.util.*;
+
+public class MyClass {
+    public static void main(String args[]) {
+        Scanner sc = new Scanner(System.in);
+        
+        System.out.print("Enter array manual:\nEnter size: ");
+        int size = sc.nextInt();
+        
+        System.out.println("\n\nEnter array values: ");
+        
+        int[] array = new int[size];
+        int result = 1;
+        int result_2 = 0;
+        
+        boolean isTrue = false;
+        for(int i = 0; i < size; i++){
+            System.out.print("Enter array[" + i + "]: ");
+            array[i] = sc.nextInt();
+            
+            if(isTrue){
+                result_2 += array[i] < 0 ? array[i] * -1 : array[i];
+            }
+            
+            if(array[i] < 0) isTrue = true;
+            
+            result *= array[i] == 0? 1: array[i];
+        }
+        
+        System.out.println("\n1 - " + result);
+        System.out.println("2 - " + result_2);
+        
+        System.out.print("\nCreate an array with random numbers in the ranges A to B:\nEnter size: ");
+        size = sc.nextInt();
+        
+        System.out.print("Enter A: ");
+        int variable_A = sc.nextInt();
+        System.out.print("\nEnter B: ");
+        int variable_B = sc.nextInt();
+        
+        isTrue = false;
+        result = 1;
+        result_2 = 0;
+        array = new int[size];
+        System.out.println("Created array: ");
+        for(int i = 0; i < size; i++){
+            array[i] = variable_A + (int) (Math.random() * variable_B);
+            System.out.print(array[i] + " ");
+            
+            
+            if(isTrue){
+                result_2 += array[i] < 0 ? array[i] * -1 : array[i];
+            }
+            
+            if(array[i] < 0) isTrue = true;
+            
+            result *= array[i] == 0? 1: array[i];
+        }
+        
+        
+        System.out.println("\n1 - " + result);
+        System.out.println("2 - " + result_2);
+        
+    }
+
+}
