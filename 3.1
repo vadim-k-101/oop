@@ -1,0 +1,62 @@
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class Main {
+    static Scanner in;
+    public static void main(String[] args){
+        in = new Scanner(System.in);
+        task1();
+    }
+
+    private static void task1(){
+        List<Meteo> list = new ArrayList<>(Arrays.asList(
+                new Meteo(LocalDate.of(2022, 6, 1), 27, 980),
+                new Meteo(LocalDate.of(2022, 6, 2), 28, 1023),
+                new Meteo(LocalDate.of(2022, 6, 3), 20, 1042),
+                new Meteo(LocalDate.of(2022, 6, 4), 17, 1023),
+                new Meteo(LocalDate.of(2022, 6, 5), 30, 1041),
+                new Meteo(LocalDate.of(2022, 6, 6), 31, 1032),
+                new Meteo(LocalDate.of(2022, 6, 7), 27, 1010),
+                new Meteo(LocalDate.of(2022, 6, 8), 26, 999),
+                new Meteo(LocalDate.of(2022, 6, 9), 24, 989),
+                new Meteo(LocalDate.of(2022, 6, 10), 23, 981)
+        ));
+
+        while(true){
+            System.out.print("\nDisplay a sorted list by temperature in ascending order - 0" +
+                    "\nThe largest difference - 1\n" +
+                    "Your choose - ");
+            int num = in.hasNextInt() ? in.nextInt() : 0;
+            switch (num){
+                case 0:
+                    list = list.stream().sorted(Comparator.comparing(Meteo::getTemperature)).collect(Collectors.toList());
+                    outputForTask1(list);
+                    break;
+                case 1:
+                    double max = list.get(0).getTemperature() - list.get(1).getTemperature();
+                    max = max < 0 ? max * -1 : max;
+
+                    int index = 0;
+                    for (int i = 0; i < list.size() - 1; i++) {
+                        double result = list.get(i).getTemperature() - list.get(i + 1).getTemperature();
+                        if(result > max){
+                            index = i;
+                            max = result;
+                        }
+                    }
+
+                    System.out.println("\nThe largest difference between: \n" +
+                            list.get(index) + "\n" + list.get(index + 1));
+                    break;
+                default: return;
+            }
+        }
+    }
+
+    private static void outputForTask1(List<Meteo> list){
+        System.out.println("\nDate\t|Temp\t|Pressure");
+        list.stream().forEach(item -> System.out.println(item.getDate() +
+                "\t|" + item.getTemperature() + "\t|" + item.getPressure()));
+    }
+}
