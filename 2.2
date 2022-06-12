@@ -1,0 +1,96 @@
+import javax.naming.OperationNotSupportedException;
+import java.io.*;
+import java.util.Arrays;
+import java.util.function.BinaryOperator;
+
+public class Main {
+
+    public static void main(String[] args) throws OperationNotSupportedException {
+
+        File file = new File("src/main/resources/in/in.txt");
+        char[] buf = new char[256];
+        int c;
+        try {
+            FileReader reader = new FileReader(file);
+            while((c = reader.read(buf))>0){
+
+                if(c < 256){
+                    buf = Arrays.copyOf(buf, c);
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        Calc calc = new Calc();
+
+        StringBuilder sb = new StringBuilder();
+        for (char ch : buf) {
+            if (Character.isDigit(ch) || ch=='.')sb.append(ch);
+            else{
+                calc.apply(Double.valueOf(sb.toString()));
+                calc.apply(MathOperation.getBySymbol(ch));
+                sb = new StringBuilder();
+            }
+        }
+        calc.apply(Double.valueOf(sb.toString()));
+
+        try{
+            File file1 = new File("src/main/resources/out/out.txt");
+            FileWriter fileWriter = new FileWriter(file1);
+
+            fileWriter.write(String.valueOf(calc.getResult()));
+            fileWriter.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+
+class Calc{
+
+    private Double result;
+    private MathOperation mathOperation;
+
+    public void apply (double digit){
+        if (result==null) result = digit;
+        else result = mathOperation.applyOperation(result, digit);
+    }
+
+    public void apply (MathOperation mathOperation){
+        this.mathOperation = mathOperation;
+    }
+
+    public double getResult(){
+        return result;
+    }
+
+}
+
+enum MathOperation{
+
+    MULTIPL('*', (x,y)->x*y),
+    DIVIDION('/', (x,y)->x/y),
+    SUBSTRACT('-', (x,y)->x-y),
+    ADD('+', (x,y)->x+y);
+
+    private final char symbol;
+    private final BinaryOperator<Double> operation;
+
+    private MathOperation(char symbol, BinaryOperator<Double> operation){
+        this.symbol = symbol;
+        this.operation = operation;
+    }
+
+    public double applyOperation (double numb1, double numb2){
+        return this.operation.apply(numb1, numb2);
+    }
+
+    public static MathOperation getBySymbol(final char symbol) throws OperationNotSupportedException {
+        for (MathOperation mathOperation : MathOperation.values()) {
+            if (mathOperation.symbol==symbol) return mathOperation;
+        }
+        throw new OperationNotSupportedException("Math.operation " + symbol + " not exist!");
+    }
+
+}
